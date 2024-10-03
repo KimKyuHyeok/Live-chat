@@ -22,6 +22,9 @@ io.on('connection', (socket) => {
 
         socket.join(user.room);
 
+        socket.emit('message', generateMessage('Admin', `${user.room} 방에 오신 걸 환영합니다.`))
+        socket.broadcast.to(user.room).emit('message', generateMessage('', `${user.username} 님이 방에 입장했습니다.`))
+        
         callback();
     })
     socket.on('message', () => {})
