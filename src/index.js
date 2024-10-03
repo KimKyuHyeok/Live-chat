@@ -5,7 +5,7 @@ const port = 4000;
 const http = require('http');
 const path = require('path');
 const { Server } = require('socket.io');
-const { addUser, getUsersInRoom } = require('./utils/users');
+const { addUser, getUsersInRoom, getUser } = require('./utils/users');
 const { generateMessage } = require('./utils/messages');
 const server = http.createServer(app);
 const io = new Server(server);
@@ -32,7 +32,13 @@ io.on('connection', (socket) => {
         })
 
     })
-    socket.on('message', () => {})
+    socket.on('sendMessage', (message, callback) => {
+
+        const user = getUser(socket.id);
+
+        io.to(user.room).emit('message', generateMessage(user.username, message))
+        callback();
+    })
     socket.on('disconnect', () => {})
 })
 
